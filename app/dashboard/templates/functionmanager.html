@@ -1,0 +1,76 @@
+{% extends "template.html" %} {% block title %} Plugins - Admin Dashboard {%
+endblock %} {% block content %}
+<h2>Function List</h2>
+<table class="table">
+	<thead>
+		<tr class="text-white">
+			<th scope="col">Function Name</th>
+			<th scope="col">Type</th>
+			<th scope="col">Module</th>
+			<th scope="col">Version</th>
+			<th scope="col">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for plugin in plugins %}
+		<tr>
+			<td class="text-white">{{ plugin.name }}</td>
+			<td class="text-white">{{ plugin.type }}</td>
+			<td class="text-white">{{ plugin.module }}.py</td>
+			<td class="text-white">{{ plugin.version }}</td>
+			<td>
+				<a
+					href="/dashboard/function/editfunction/{{ plugin.type }}/{{ plugin.module }}/{{ plugin.name }}"
+					class="btn btn-primary"
+					>Edit</a
+				>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<h2>
+	Module List
+	<span
+		><a class="btn btn-primary" href="/dashboard/function/createmodule"
+			>Create New Module</a
+		></span
+	>
+</h2>
+
+<table class="table">
+	<thead>
+		<tr class="text-white">
+			<th scope="col">Short Name</th>
+			<th scope="col">Long Name</th>
+			<th scope="col">Path</th>
+			<th scope="col">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for module in modules %}
+		<tr>
+			<td class="text-white">{{ module.__name__.split(".")[-1] }}</td>
+			<td class="text-white">{{ module.__name__.replace("app.", "") }}</td>
+			<td class="text-white">{{ module.__file__ }}</td>
+			<td>
+				<a
+					href="/dashboard/function/editmodule/{{ module.type }}/{{ module.name }}"
+					class="btn btn-primary"
+					>Edit</a
+				>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<button class="btn btn-primary" id="reload">Reload Plugins</button>
+
+<script>
+	$("#reload").click(async function (e) {
+		await fetch("/dashboard/api/reloadplugins");
+		window.location.reload();
+	});
+</script>
+{% endblock %}

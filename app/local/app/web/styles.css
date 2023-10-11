@@ -1,0 +1,112 @@
+/* styles.css */
+body {
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+}
+
+.unselectable {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.timeanddate {
+	position: fixed;
+	bottom: 1.5rem;
+	left: 1.5rem;
+	color: white;
+	text-align: left;
+}
+
+.time {
+	font-size: 6rem;
+	color: white;
+}
+
+.date {
+	font-size: 3rem;
+	color: white;
+}
+
+.listening {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	width: 12rem;
+	height: 8rem;
+	opacity: 0;
+}
+
+.listening .bar {
+	width: 12px;
+	height: 1px;
+	border-radius: 10px;
+	background-color: white;
+	margin: 0.3rem;
+}
+
+.bar-animation {
+	animation: up_down 1.5s ease-in-out infinite;
+}
+
+.fadein {
+	animation: fadein 0.25s;
+}
+.fadeout {
+	animation: fadeout 0.25s;
+}
+
+@keyframes fadein {
+	to {
+		opacity: 1;
+	}
+}
+@keyframes fadeout {
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes up_down {
+	0%,
+	100% {
+		height: 2px;
+	}
+
+	50% {
+		height: 80px;
+	}
+}
+
+.listening .bar:nth-child(1) {
+	animation-delay: 0.5s;
+}
+.listening .bar:nth-child(2) {
+	animation-delay: 0.23s;
+}
+.listening .bar:nth-child(3) {
+	animation-delay: 0.94s;
+}
+.listening .bar:nth-child(4) {
+	animation-delay: 0.68;
+}
+.listening .bar:nth-child(5) {
+	animation-delay: 0.37s;
+}
+.listening .bar:nth-child(6) {
+	animation-delay: 0.29s;
+}
+.listening .bar:nth-child(7) {
+	animation-delay: 0s;
+}
+.listening .bar:nth-child(8) {
+	animation-delay: 0.48s;
+}

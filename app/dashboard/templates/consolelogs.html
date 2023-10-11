@@ -1,0 +1,24 @@
+{% extends "template.html" %} {% block title %} Home - Admin Dashboard {%
+endblock %} {% block page_title %} Home {% endblock %} {% block content %}
+<pre id="logArea"></pre>
+
+<script>
+	function colorCodeLogs(logs) {
+		logs = logs.replace(/(ERROR)/g, '<em class="text-danger">$1</em>');
+		logs = logs.replace(/(INFO)/g, '<em class="text-info">$1</em>');
+		logs = logs.replace(/(WARNING)/g, '<em class="text-warning">$1</em>');
+		return logs;
+	}
+
+	async function fetchLogs() {
+		const data = await fetch("/dashboard/api/getlogs");
+		let logs = await data.text();
+		logs = colorCodeLogs(logs);
+		document.getElementById("logArea").innerHTML = logs;
+	}
+
+	fetchLogs();
+	// Fetch logs every second
+	setInterval(fetchLogs, 1000);
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "template.html" %} {% block title %} Create Module {% endblock %} {%
+block content %}
+<h2>New Module</h2>
+<form id="module-form">
+	<div class="form-group">
+		<label for="moduleName">Module Name</label>
+		<div class="input-group">
+			<input
+				type="text"
+				class="form-control"
+				id="moduleName"
+				placeholder="Enter module name"
+				required
+			/>
+			<div class="input-group-append">
+				<span class="input-group-text">.py</span>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="moduleType">Type</label>
+		<select class="form-control" id="moduleType">
+			<option value="base">Base</option>
+			<option value="plugin">Plugin</option>
+		</select>
+	</div>
+	<button type="submit" class="btn btn-primary">Create Module</button>
+</form>
+
+<script>
+	$(document).ready(function () {
+		$("#module-form").on("submit", function (e) {
+			e.preventDefault(); // Prevents the default form submission behavior
+
+			var moduleName = $("#moduleName").val();
+			var moduleType = $("#moduleType").val();
+
+			$.ajax({
+				url: "/dashboard/function/createmodule",
+				type: "POST",
+				data: {
+					name: moduleName,
+					type: moduleType,
+				},
+				success: function (response) {
+					console.log("Success:", response);
+					window.location.href = `/dashboard/function/editmodule/${moduleType}/${moduleName.replace(
+						".py",
+						""
+					)}`;
+				},
+				error: function (error) {
+					console.error("Error:", error);
+				},
+			});
+		});
+	});
+</script>
+{% endblock %}

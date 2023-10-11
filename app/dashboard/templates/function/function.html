@@ -1,0 +1,103 @@
+{% extends "template.html" %} {% block title %} Manage Plugin - {{ plugin.name
+}} {% endblock %} {% block content %}
+<h2>Manage Function: {{plugin.module}}/{{ plugin.name }}</h2>
+
+<div class="card">
+	<div class="card-body bg-dark">
+		<h5 class="card-title">Plugin Details</h5>
+		<p>
+			<strong>Module Name:</strong
+			><span id="pluginModule"> {{ plugin.module }}</span>
+		</p>
+		<p>
+			<strong>Function Name:</strong
+			><span id="pluginName"> {{ plugin.name }}</span>
+		</p>
+		<p>
+			<strong>Function Type:</strong
+			><span id="pluginType"> {{ plugin.type }}</span>
+		</p>
+		<p><strong>Version:</strong> {{ plugin.version }}</p>
+		<p><strong>Description:</strong> {{ plugin.description }}</p>
+	</div>
+</div>
+
+<div class="card mt-4">
+	<div class="card-body bg-dark">
+		<h5 class="card-title">Plugin Configuration</h5>
+		<form id="dynamic-form">
+			<div id="inputs-container" style="width: 100%">
+				{% for input in plugin.configOptions %}
+				<div class="input-group">
+					<span class="input-group-text" id="{{input.value}}Label"
+						>{{input.title}}</span
+					>
+					<input
+						type="{{input.type}}"
+						placeholder="{{input.description}}"
+						name="{{input.value}}"
+						class="form-control"
+						value="{{inputs[input.value]}}"
+					/>
+				</div>
+				{% endfor %}
+			</div>
+			<button type="submit" class="btn btn-primary mt-3" id="saveChanges">
+				Save Changes
+			</button>
+		</form>
+	</div>
+</div>
+
+<div class="card mt-4 bg-dark">
+	<div class="card-body">
+		<h5 class="card-title">Development Environment</h5>
+
+		<a
+			class="btn btn-primary"
+			id="editFiles"
+			href="/dashboard/function/editmodule/{{plugin.type}}/{{plugin.module}}"
+		>
+			Edit Module
+		</a>
+	</div>
+</div>
+<script>
+	document
+		.getElementById("dynamic-form")
+		.addEventListener("submit", function (event) {
+			event.preventDefault();
+
+			const formData = new FormData(event.target);
+			const data = [];
+			formData.forEach((value, key) => {
+				data.push({ key: key, value: value });
+			});
+
+			console.log(data);
+
+			// Send data to Flask backend
+			fetch(
+				`/dashboard/function/${$("#pluginType").html().replace(" ", "")}/${$(
+					"#pluginModule"
+				)
+					.html()
+					.replace(" ", "")}/${$("#pluginName")
+					.html()
+					.replace(" ", "")}/submit-setup`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(data),
+				}
+			)
+				.then((response) => response.json())
+				.then((result) => {
+					console.log("Data submitted successfully!");
+					console.log(result); // You can handle the response here if needed
+				});
+		});
+</script>
+{% endblock %}

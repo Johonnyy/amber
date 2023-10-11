@@ -1,0 +1,252 @@
+{% extends "template.html" %} {% block title %} Edit Plugin{% endblock %} {%
+block content %}
+
+<div id="container">
+	<div class="editor-window">
+		<div id="fileInfo">Welcome</div>
+		<div id="editor"></div>
+	</div>
+
+	<div>
+		<div>
+			<input
+				id="newName"
+				type="text"
+				class="bg-dark text-white"
+				value="Welcome"
+			/><span
+				><button class="btn btn-primary" id="updateName">
+					Change name
+				</button></span
+			>
+		</div>
+
+		<button id="saveButton" class="btn btn-primary mt-3">Save File</button>
+		<button id="deleteButton" class="btn btn-danger mt-3">Delete File</button>
+	</div>
+</div>
+
+<div style="display: none" id="fileContent">{{ file }}</div>
+<div style="display: none" id="moduleFilePath">{{ module.__file__ }}</div>
+<div style="display: none" id="moduleName">{{ module.__name__ }}</div>
+<style>
+	.editor-window {
+		width: 100%;
+		margin-bottom: 1rem;
+	}
+
+	#fileInfo {
+		background-color: #3e3e3e;
+		color: #fff;
+		padding-left: 1rem;
+		font-family: Arial, sans-serif;
+	}
+
+	#editor {
+		height: 600px;
+	}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+
+<script>
+	// editor.getAction('editor.action.formatDocument').run()
+	var editor;
+	var isChanged = false;
+	var currentFilePath = $("#moduleFilePath").html();
+	var filePathSplit = currentFilePath.split("\\" || "//" || "/");
+	var fileName = filePathSplit[filePathSplit.length - 1];
+	var fileType = filePathSplit[filePathSplit.length - 2];
+	$("#fileInfo").html(fileName);
+	$("#newName").val(fileName);
+
+	console.log(fileName);
+	console.log(currentFilePath);
+	var filePath = `app/plugins/${$("#pluginName").html()}/`;
+
+	require.config({
+		paths: {
+			vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs",
+		},
+	});
+	require(["vs/editor/editor.main"], function () {
+		editor = monaco.editor.create(document.getElementById("editor"), {
+			value: $("#fileContent").html(),
+			language: "python",
+			theme: "vs-dark",
+		});
+
+		editor.onDidChangeModelContent(function () {
+			path = $("#fileInfo").html();
+			if (!path.endsWith("*")) {
+				$("#fileInfo").html(path + "*");
+			}
+			isChanged = true;
+		});
+	});
+
+	// async function fetchFileContent(fileId) {
+	// 	if (isChanged) {
+	// 		const userConfirmed = window.confirm(
+	// 			"You have unsaved changes. Are you sure you want to switch files?"
+	// 		);
+	// 		if (!userConfirmed) {
+	// 			return;
+	// 		}
+	// 	}
+	// 	pluginName = $("#pluginName").html();
+	// 	$.get(
+	// 		`/dashboard/plugin/${pluginName}}/editor/file`,
+	// 		{ file_path: fileId },
+	// 		function (response) {
+	// 			if (response.status === "success") {
+	// 				currentFilePath = fileId;
+	// 				let pathArray = currentFilePath.split("\\");
+	// 				fileName = pathArray.pop();
+	// 				filePath = pathArray.join("\\") + "\\";
+	// 				editor.setValue(response.content);
+	// 				monaco.editor.setModelLanguage(editor.getModel(), response.language);
+	// 				$("#fileInfo").html(fileName);
+	// 				$("#newName").val(fileName);
+
+	// 				isChanged = false;
+	// 			} else {
+	// 				alert("Error reading file: " + response.message);
+	// 			}
+	// 		}
+	// 	);
+	// }
+
+	async function saveFile() {
+		if (currentFilePath && isChanged) {
+			var content = editor.getValue();
+
+			var pluginName = $("#pluginName").html();
+
+			$.ajax({
+				url: `/dashboard/function/save_file`,
+				method: "POST",
+				contentType: "application/json",
+				data: JSON.stringify({
+					file_path: currentFilePath,
+					content: content,
+				}),
+				success: function (response) {
+					if (response.status === "success") {
+						isChanged = false;
+						$("#fileInfo").html(fileName);
+						console.log("File saved successfully.");
+					} else {
+						alert("Error saving file: " + response.message);
+					}
+				},
+				error: function (response) {
+					alert("Error saving file: " + response.message);
+				},
+			});
+		}
+	}
+
+	async function updateFile(action, oldFile = null, newFile = null) {
+		$.ajax({
+			url: `/dashboard/function/actionmodule/${fileType}/${fileName.replace(
+				".py",
+				""
+			)}`,
+			method: "POST",
+			contentType: "application/json",
+			data: JSON.stringify({
+				action: action,
+				oldFile: oldFile,
+				newFile: newFile,
+			}),
+			success: function (response) {
+				if (response.status === "success") {
+					console.log("File edited successfully.");
+				} else {
+					alert("Error editing file: " + response.message);
+				}
+			},
+			error: function () {
+				alert("Error editing file");
+			},
+		});
+	}
+
+	$("#deleteButton").click(async function () {
+		if (
+			window.confirm(
+				"Are you sure you want to delete this file? " + currentFilePath
+			)
+		) {
+			// Get the file path from the selected node
+			const filePath = currentFilePath;
+
+			if (!currentFilePath) return;
+
+			// Send request to backend to delete the file
+			await updateFile("delete", currentFilePath);
+
+			window.location.href = "/dashboard/functionmanager";
+		}
+	});
+
+	$("#updateName").click(async function () {
+		newName = $("#newName").val();
+
+		await updateFile(
+			"rename",
+			currentFilePath,
+			currentFilePath.replace(fileName, newName)
+		);
+
+		var newCurrentFilePath = currentFilePath.replace(fileName, newName);
+		var newFilePathSplit = newCurrentFilePath.split("\\" || "//" || "/");
+		var newFileName = newFilePathSplit[newFilePathSplit.length - 1];
+		var newFileType = newFilePathSplit[newFilePathSplit.length - 2];
+
+		window.location.href = `/dashboard/function/editmodule/${newFileType}/${newFileName.replace(
+			".py",
+			""
+		)}`;
+	});
+
+	$("#createNewFile").click(async function () {
+		newFile = $("#newFile").val();
+
+		await updateFile("create", null, filePath + newFile);
+
+		window.location.reload();
+	});
+
+	$("#saveButton").click(function () {
+		saveFile();
+	});
+
+	window.addEventListener("beforeunload", function (e) {
+		if (isChanged) {
+			e.preventDefault();
+			e.returnValue =
+				"You have unsaved changes. Are you sure you want to leave?";
+		}
+	});
+
+	window.addEventListener("keydown", function (event) {
+		// Prevent default behavior for Ctrl+S
+		if (event.ctrlKey && event.keyCode === 83) {
+			event.preventDefault();
+			// Trigger your save logic here
+			console.log("Save command triggered");
+			saveFile();
+		}
+		// Prevent default behavior for Ctrl+Shift+F
+		if (event.ctrlKey && event.shiftKey && event.keyCode === 70) {
+			event.preventDefault();
+			// Trigger your format logic here
+			console.log("Format command triggered");
+			editor.getAction("editor.action.formatDocument").run();
+		}
+	});
+</script>
+
+{% endblock %}

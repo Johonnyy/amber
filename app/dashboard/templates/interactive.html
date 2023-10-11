@@ -1,0 +1,135 @@
+{% extends "template.html" %} {% block title %} Interactive Menu - Admin
+Dashboard {% endblock %} {% block page_title %} Home {% endblock %} {% block
+content %}
+<div class="container mt-5">
+	<h2 class="mb-4" id="setup">Online Interactive Environment</h2>
+	<div id="inputs-container">
+		<input
+			type="text"
+			id="console"
+			name="console"
+			class="form-control"
+			autocomplete="off"
+		/>
+	</div>
+	<button id="submit" class="btn btn-primary mt-1">Submit</button>
+	<button id="newConvo" class="btn btn-warning mt-1">New Conversation</button>
+	<div class="my-3">
+		<h3>Current Conversation:</h3>
+		<h6>ID: {{conversation["id"]}}</h6>
+		<h6>Tokens: {{conversation["tokens"]}}</h6>
+		<h6>Start Timestamp: {{conversation["timestamp"]}}</h6>
+	</div>
+	<div class="accordion mt-5" id="consoleOutput">
+		{% for i in range(conversation["messages"]|length) %}
+		<div class="accordion-item bg-dark">
+			<h2 class="accordion-header" id="heading{{i}}">
+				<button
+					class="accordion-button bg-dark text-white"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#collapse{{i}}"
+					aria-expanded="true"
+					aria-controls="collapse{{i}}"
+				>
+					<strong>{{conversation["messages"][i].role}}:&nbsp;</strong>
+					{{conversation["messages"][i].content}}
+				</button>
+			</h2>
+			<div
+				id="collapse{{i}}"
+				class="accordion-collapse collapse"
+				aria-labelledby="heading{{i}}"
+				data-bs-parent="#consoleOutput"
+			>
+				<div class="accordion-body">
+					<h6>
+						ID: {{conversation["messages"][i].id if
+						conversation["messages"][i].id else 0}}
+					</h6>
+					<h6>
+						Timestamp: {{conversation["messages"][i].timestamp if
+						conversation["messages"][i].timestamp else None}}
+					</h6>
+					<h6>
+						Tokens: {{conversation["messages"][i].tokens if
+						conversation["messages"][i].tokens else 0}}
+					</h6>
+					<h6>Full JSON:</h6>
+					<code>{{conversation["messages"][i]}}</code>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+
+<script>
+	// Fetch inputs from the Flask route and display them
+	// .click(function(){
+
+	$("#submit").click(function () {
+		const consoleValue = $("#console").val();
+
+		$("#console").val("");
+		$("#consoleOutput").append(`<div class="accordion-item bg-dark">
+			<h2 class="accordion-header" id="headingTwo">
+				<button
+					class="accordion-button bg-dark text-white"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#collapseTwo"
+					aria-expanded="true"
+					aria-controls="collapseTwo"
+				>
+					<strong>user:&nbsp;</strong> ${consoleValue}
+				</button>
+			</h2>
+			<div
+				id="collapseTwo"
+				class="accordion-collapse collapse"
+				aria-labelledby="headingTwo"
+				data-bs-parent="#accordionExample"
+			>
+				<div class="accordion-body">
+					<code>Creating request...</code>
+				</div>
+			</div>
+		</div>
+`);
+
+		const payload = {
+			console: consoleValue,
+		};
+
+		$.ajax({
+			type: "POST",
+			url: "/dashboard/api/submit-command",
+			contentType: "application/json",
+			data: JSON.stringify(payload),
+			success: function (response) {
+				window.location.reload();
+			},
+		});
+	});
+
+	$("#newConvo").click(function () {
+		$("#console").val("");
+		$("#consoleOutput").html("");
+
+		const payload = {
+			newConvo: true,
+		};
+		$.ajax({
+			type: "POST",
+			url: "/dashboard/api/submit-command",
+			contentType: "application/json",
+			data: JSON.stringify(payload),
+			success: function (response) {
+				console.log(response);
+				window.location.reload();
+			},
+		});
+	});
+</script>
+{% endblock %}
