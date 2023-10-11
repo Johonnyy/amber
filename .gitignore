@@ -10,6 +10,7 @@ config.yml
 app/moduleCredentials.yml
 app/databases/*
 app/devices/*
+!app/devices/README.md
 app/modules/plugins/*
 
 # Distribution / packaging
