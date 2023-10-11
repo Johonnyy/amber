@@ -8,6 +8,9 @@ __pycache__/
 
 config.yml
 app/moduleCredentials.yml
+app/databases/*
+app/devices/*
+app/modules/plugins/*
 
 # Distribution / packaging
 .Python

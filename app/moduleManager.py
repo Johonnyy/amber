@@ -85,9 +85,9 @@ class ModuleManager:
         return None
 
     def setInput(self, type, module, name, inputKey, inputValue):
-        pluginCredentials = yaml.safe_load(
-            open(os.path.join(current_dir, CREDENTIALS_NAME))
-        )
+        with open(os.path.join(current_dir, CREDENTIALS_NAME), "a+") as f:
+            f.seek(0)  # Move file pointer to the beginning of the file
+            pluginCredentials = yaml.safe_load(f)  # Load the YAML data
 
         if pluginCredentials is None:
             pluginCredentials = {}
@@ -107,9 +107,9 @@ class ModuleManager:
             yaml.safe_dump(pluginCredentials, file)
 
     def getInput(self, type, module, name, inputKey=None):
-        pluginCredentials = yaml.safe_load(
-            open(os.path.join(current_dir, CREDENTIALS_NAME))
-        )
+        with open(os.path.join(current_dir, CREDENTIALS_NAME), "a+") as f:
+            f.seek(0)  # Move file pointer to the beginning of the file
+            pluginCredentials = yaml.safe_load(f)  # Load the YAML data
 
         if pluginCredentials == None:
             return None

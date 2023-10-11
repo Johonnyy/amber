@@ -104,6 +104,11 @@ def log(data: str = "", severity: str = "info", color: str = None):
      - UNDERLINE (underlined)
     """
 
+    stack = inspect.stack()
+    caller_frame = stack[1]
+    filename = caller_frame.filename
+    line_number = caller_frame.lineno
+
     severities = {
         "info": {"color": bcolors.OKCYAN, "function": logging.info},
         "success": {"color": bcolors.OKGREEN, "function": logging.info},
@@ -125,9 +130,10 @@ def log(data: str = "", severity: str = "info", color: str = None):
             return log("No such thing as color " + color, "error", "BOLD")
 
     timestamp = (
-        useSeverity["color"]
+        # f"{filename.split('amber')[1]}: {line_number}\n"
+        "Timestamp: {:%Y-%m-%d %H:%M:%S} - ".format(datetime.datetime.now())
+        + useSeverity["color"]
         + useColor
-        + "Timestamp: {:%Y-%m-%d %H:%M:%S} - ".format(datetime.datetime.now())
     )
     message = timestamp + str(data) + bcolors.ENDC
     useSeverity["function"](message)
