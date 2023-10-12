@@ -35,43 +35,35 @@ The wrapper will automatically create a virtual environment and install all of t
 You can use `python .\wrapper.py --debug` to start it quicker. This disables the check for libraries and doesn't install them. Don't use this the first time.
 
 # Configuration
-All of these are required
-##### adminPass
-The password for the dashboard.
-##### azureKey
-The key obtained from Microsoft Azure for speech services.
-##### initialPrompt
-The prompt that is first sent to GPT. This is included in every conversation.
-##### openaiKey
-The API key obtained from the OpenAI website
-##### picovoiceKey
-The API key obtained from the Picovoice website.
-##### port
-Port to run the admin Dashboard on
-##### speech.region
-Region for the text to speech. Required by Azure
-##### speech.voice
-The voice for the assistant. Voices can be found [here](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts#prebuilt-neural-voices)
+All of these are required  
+`adminPass`: The password for the dashboard.  
+`azureKey`: The key obtained from Microsoft Azure for speech services.  
+`initialPrompt`: The prompt that is first sent to GPT. This is included in every conversation.  
+`openaiKey`: The API key obtained from the OpenAI website.  
+`picovoiceKey`: The API key obtained from the Picovoice website.  
+`port`: Port to run the admin Dashboard on.  
+`speech.region`: Region for the text to speech. Required by Azure.  
+`speech.voice`: The voice for the assistant. Voices can be found [here](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts#prebuilt-neural-voices).
 
 # Dashboard
 The dashboard is a useful feature that allows you to manage Amber entirely on the web. It is available on the port configured in `config.yml`. An example URL would look like: `localhost:8000/dashboard`. This will probably redirect you to the login page where the default login is `admin` and `password`. The password can be changed. These are the different pages:
 
-### Configuration
+##### Configuration
 JSON editor for editing the config.yml file. These values are updated automatically so you shouldn't have to restart. If you change the picovoiceKey you will need to restart, which can be done on the main page if you are using the wrapper (recommended).
 
-### Interactive
+##### Interactive
 Page for interacting with Amber on a text based conversation. This is useful for debugging, as it shows the raw json for each message and how many tokens the conversation takes up. Each of these conversations are saved in the conversations.db database.
 
-### Module Manager
+##### Module Manager
 Page for configuring functions and modules. Here you can edit API Keys, reload functions, and edit modules.
 
-### Device Manager
+##### Device Manager
 I haven't worked too much on device because I've only had a need for the local device so I don't think this will work.
 
-### Conversation Logs
+##### Conversation Logs
 This has not be created yet. This page will be for reading the previous conversations and maybe doing something with that data.
 
-### Console Logs
+##### Console Logs
 Pretty self explanatory. Amber comes with it's own `log()` function which logs everything in the console and on this page.
 
 # Developing

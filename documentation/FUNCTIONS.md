@@ -40,14 +40,14 @@ class GetWeather:
         pass
 ```
 
-This is a stripped down version of the weather function. Let's explain it. First, In the \_\_init\_\_ function, there are multiple fields. These fields tell the system about your function.
-\*`self.name`: Name of the function. Should match class name
-\*`self.description`: Description
-`self.version`: Version number
-\*`self.parameters`: Basically the arguments of the function. The format for constructing these can be found [here](https://platform.openai.com/docs/guides/gpt/function-calling).
-`self.configOptions`: Array of inputs such as API Keys needed for the function. For format can be found in the example.
-`self.requirements`: Required external libraries to run the function. These will be installed.
-\* = Being sent to OpenAI Functions
+This is a stripped down version of the weather function. Let's explain it. First, In the \_\_init\_\_ function, there are multiple fields. These fields tell the system about your function.  
+\*`self.name`: Name of the function. Should match class name  
+\*`self.description`: Description  
+`self.version`: Version number  
+\*`self.parameters`: Basically the arguments of the function. The format for constructing these can be found [here](https://platform.openai.com/docs/guides/gpt/function-calling).  
+`self.configOptions`: Array of inputs such as API Keys needed for the function. For format can be found in the example.  
+`self.requirements`: Required external libraries to run the function. These will be installed.  
+\* = Being sent to OpenAI Functions  
 
 ### Handle function
 This function **is required** and should only contain two arguments: self and args (this can be called anything it doesn't matter).
