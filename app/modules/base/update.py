@@ -74,11 +74,17 @@ class Update:
         sys.exit(0)
 
     def compare_versions(self, local_version, github_version):
-        local_version.replace(" ", "").replace(".", "").replace("v", "").replace(
-            "version", ""
+        local_version = (
+            local_version.replace(" ", "")
+            .replace(".", "")
+            .replace("v", "")
+            .replace("version", "")
         )
-        github_version.replace(" ", "").replace(".", "").replace("v", "").replace(
-            "version", ""
+        github_version = (
+            github_version.replace(" ", "")
+            .replace(".", "")
+            .replace("v", "")
+            .replace("version", "")
         )
 
         if int(local_version) == int(github_version):
