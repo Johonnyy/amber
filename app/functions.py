@@ -87,7 +87,7 @@ def get_base_dir():
         return os.path.dirname(os.path.abspath(__file__))
 
 def exit(code):
-    eel.close_page()
+    eel.closeApp()
     sys.exit(code)
 
 def log(data: str = "", severity: str = "info", color: str = None):

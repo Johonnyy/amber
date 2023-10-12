@@ -81,3 +81,9 @@ function hideListening() {
 		});
 	}, 249);
 }
+
+eel.expose(closeApp);
+
+function closeApp() {
+	window.close();
+}
