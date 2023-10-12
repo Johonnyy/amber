@@ -4,10 +4,26 @@ import requests
 import sys
 import os
 import subprocess
+import datetime
 
 REPOSITORYURL = "https://github.com/Johonnyy/amber.git"
 VERSIONURL = "https://raw.githubusercontent.com/Johonnyy/amber/main/version.txt"
 VERSIONPATH = "version.txt"
+
+
+class TimeAndDate:
+    def __init__(self):
+        self.name = "TimeAndDate"
+        self.description = "Get current time and date."
+        self.version = "1.0.0"
+        self.parameters = {
+            "type": "object",
+            "properties": {},
+        }
+        self.configOptions = []
+
+    def handle(self, args):
+        return datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
 
 
 class Update:
