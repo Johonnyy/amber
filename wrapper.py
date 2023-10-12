@@ -41,6 +41,11 @@ while True:
 
     print("Starting Amber...")
 
-    # Install libraries from requirements.txt
     p = subprocess.Popen([python_executable, "main.py"])
-    p.wait()
+    exit_code = p.wait()
+
+    if exit_code == 10:
+        print("Restarting due to update...")
+        continue
+    else:
+        break

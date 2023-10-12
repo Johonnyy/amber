@@ -73,21 +73,16 @@ class Update:
 
         try:
             # Execute git pull
-            result = subprocess.run(
-                ["git", "pull"], capture_output=True, text=True, check=True
-            )
-
-            # Check the result
-            if result.returncode == 0:
-                log("Successfully updated from the repository.", "success", "BOLD")
-            else:
-                log("Successfully updated from the repository.", "error", "BOLD")
-                print(result.stderr)
+            # Execute git pull
+            subprocess.run(["git", "fetch", "origin"], check=True)
+            subprocess.run(
+                ["git", "reset", "--hard", "origin/main"], check=True
+            )  # Replace 'main' with your branch name
 
         except subprocess.CalledProcessError as e:
             print(f"An error occurred while updating the repository: {e}")
 
-        sys.exit(0)
+        sys.exit(10)
 
     def compare_versions(self, local_version, github_version):
         local_version = (
