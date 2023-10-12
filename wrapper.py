@@ -26,18 +26,18 @@ while True:
         command = (
             f"{activate_script} && {pip_script} install --quiet -r requirements.txt"
         )
+        if not args.debug:
+            print("Installing requirements...")
+            subprocess.run(command, shell=True)
     else:
         print("System detected: Linux/Mac")
         activate_script = os.path.join(VENVPATH, "bin", "activate")
         pip_script = os.path.join(VENVPATH, "bin", "pip")
         python_executable = os.path.join(VENVPATH, "bin", "python")
         command = f"source {activate_script} && {pip_script} install --quiet -r requirements.txt"
-
-    # Install new requirements
-
-    if not args.debug:
-        print("Installing requirements...")
-        subprocess.run(command, shell=True)
+        if not args.debug:
+            print("Installing requirements...")
+            subprocess.run(command, shell=True, executable="/bin/bash")
 
     print("Starting Amber...")
 
