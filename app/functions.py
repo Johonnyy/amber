@@ -150,12 +150,15 @@ def getLogs():
 def getConfig():
     base_path = get_base_dir()
 
-    if frozen():
-        return yaml.safe_load(open(os.path.join(base_path, "config.yml")))
-    else:
-        return yaml.safe_load(
-            open(os.path.join(os.path.dirname(base_path), "config.yml"))
-        )
+    try:
+        if frozen():
+            return yaml.safe_load(open(os.path.join(base_path, "config.yml")))
+        else:
+            return yaml.safe_load(
+                open(os.path.join(os.path.dirname(base_path), "config.yml"))
+            )
+    except FileNotFoundError as e:
+        log("Could not find config file! Copy it from the config.yml.example", "error", "BOLD")
 
 
 @prevent_plugin_access

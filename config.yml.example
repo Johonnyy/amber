@@ -10,3 +10,4 @@ picovoiceKey:
 speech:
   region: eastus
   voice: en-US-AriaNeural
+port: 8000

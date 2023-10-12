@@ -8,7 +8,8 @@ __pycache__/
 
 config.yml
 app/moduleCredentials.yml
-app/databases/*
+databases/*
+!databases/README.md
 app/devices/*
 !app/devices/README.md
 app/modules/plugins/*

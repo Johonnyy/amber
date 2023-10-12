@@ -3,7 +3,7 @@ from flask_socketio import SocketIO, Namespace
 from app.extensions import extensions
 from app.dashboard import Dashboard
 from app.local.main import localDevice
-from app.functions import log
+from app.functions import getConfig
 import logging
 
 
@@ -46,7 +46,7 @@ class Amber:
 
         # ssl_context = ("certs/cert.pem", "certs/key.pem")
         self.extensions.socket.run(
-            self.app, host="0.0.0.0", port=3568, use_reloader=False
+            self.app, host="0.0.0.0", port=getConfig()["port"] | 8000, use_reloader=False
         )
 
     def startLocalDevice(self):

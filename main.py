@@ -21,19 +21,6 @@ if __name__ == "__main__":
         startLocalDevice.start()
 
         amber.startDashboard()
-        # ssl_context = ("certs/cert.pem", "certs/key.pem")
-        # socket.run(app, host="0.0.0.0", port=3568, ssl_context=ssl_context)
-        """
-        eventlet.wsgi.server(
-            eventlet.wrap_ssl(
-                eventlet.listen(("0.0.0.0", 3568)),
-                certfile="cert.pem",
-                keyfile="key.pem",
-                server_side=True,
-            ),
-            app,
-        )
-        """
     except KeyboardInterrupt:
         print("Server stopped by user.")
 

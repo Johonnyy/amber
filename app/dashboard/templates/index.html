@@ -1,5 +1,10 @@
 {% extends "template.html" %} {% block title %} Home - Admin Dashboard {%
 endblock %} {% block page_title %} Home {% endblock %} {% block content %}
-<h2>Welcome to the Home Page</h2>
-<p>This is the main content for the Home page.</p>
+<h2>Home page</h2>
+<button id="restart" class="btn btn-danger">Restart</button>
+<script>
+	$("#restart").click(function () {
+		fetch("/dashboard/api/restart");
+	});
+</script>
 {% endblock %}

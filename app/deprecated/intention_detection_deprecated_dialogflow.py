@@ -4,7 +4,7 @@ from app.assistant.handlers import *
 import uuid
 import os
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "amber-vlpl-7ac22bc70a74.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
 
 
 def new_session(sessionId=str(uuid.uuid4())):

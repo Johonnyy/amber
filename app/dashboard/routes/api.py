@@ -3,6 +3,7 @@ from flask_login import login_required
 from app.functions import getLogs, log, getConfig, writeConfig
 
 import os
+import sys
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
@@ -19,6 +20,11 @@ apiBP = Blueprint(
 @login_required
 def index():
     return redirect("/dashboard")
+
+@apiBP.route("/restart")
+@login_required
+def restart():
+    sys.exit(0)
 
 
 @apiBP.route("/getlogs")
