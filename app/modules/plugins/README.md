@@ -1,0 +1,1 @@
+Directory for plugins. Documentation can be found [here](https://github.com/Johonnyy/amber/blob/main/documentation/FUNCTIONS.md)

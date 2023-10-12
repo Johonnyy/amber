@@ -19,6 +19,19 @@ fetch(
 $(document).ready(async function () {
 	// updateConfig();
 	// use ipc to load config and then use it to change config
+
+	setInterval(() => {
+		if (new Date().getHours() === 6) {
+			fetch(
+				"https://api.nasa.gov/planetary/apod?api_key=***REMOVED***"
+			).then(async (result) => {
+				var json = await result.json();
+				console.log(json);
+				$("#body").css("background-image", `url(${json.url})`);
+				// $("#body").css("background-image", `url(${json.hdurl})`);
+			});
+		}
+	}, 1000 * 60 * 60);
 });
 
 function refreshTime() {

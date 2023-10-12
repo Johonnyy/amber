@@ -6,6 +6,8 @@ import inspect
 import functools
 import logging
 import time
+import shutil
+
 from difflib import SequenceMatcher
 
 
@@ -150,6 +152,9 @@ def getLogs():
 def getConfig():
     base_path = get_base_dir()
 
+    if not os.path.exists("config.yml") and os.path.exists("config.yml.example"):
+        shutil.copyfile("config.yml.example", "config.yml")
+
     try:
         if frozen():
             return yaml.safe_load(open(os.path.join(base_path, "config.yml")))
@@ -158,7 +163,11 @@ def getConfig():
                 open(os.path.join(os.path.dirname(base_path), "config.yml"))
             )
     except FileNotFoundError as e:
-        log("Could not find config file! Copy it from the config.yml.example", "error", "BOLD")
+        log(
+            "Could not find config file! Copy it from the config.yml.example",
+            "error",
+            "BOLD",
+        )
 
 
 @prevent_plugin_access

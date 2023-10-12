@@ -12,7 +12,7 @@ Still in development.
 2. [Modular System](#Developing) - It is super easy to create modules and functions that can add functionality.
 3. SQLite - Automatically saves all conversations into an SQLite database.
 4. Made with expandability in mind - Everything is made so it can be expanded. Modules are super easy to create and can be loaded at run time
-5. Automatic Updater - Just ask Amber to update and it will pull the latest version from github and update itself.
+5. Automatic Updater - Just ask Amber to update and it will pull the latest version from github and update itself. **WARNING: This will overwrite any changes you have made. It will not overwrite plugin modules**
 6. Local Device - The device that runs locally. This handles all of the listening and text to speech. It also has a display for the time and date. I am adding functionality for weather, lists, and code displays.
 
 #### Other features:

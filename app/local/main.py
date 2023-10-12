@@ -17,6 +17,7 @@ class LocalDevice(BaseDevice):
             description="The local device.",
             version="1.0.0",
         )
+        self.muted = False
         self.api = DeviceAPI()
         self.guiApp = AmberLocalApp()
 
@@ -34,6 +35,8 @@ class LocalDevice(BaseDevice):
             self.guiApp.startListening()
         elif eventName == "stopListening":
             self.guiApp.stopListening()
+        elif eventName == "mute":
+            self.muted = True
 
 
 localDevice = LocalDevice()

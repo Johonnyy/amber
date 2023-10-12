@@ -1,7 +1,7 @@
 ### [Go Back](https://github.com/Johonnyy/amber)
 # Module Documentation
 # Creating a Module
-Modules can be created on the dashboard or in the files.
+Modules can be created on the dashboard or in the files. It is better to create modules as plugins and not as base because plugins don't get overwritten when you update.
 ##### Dashboard:
 Navigate to `Module Manager` and click on `Create New Module`
 Input the name and type and click `Create Module`

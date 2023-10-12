@@ -11,8 +11,9 @@ app/moduleCredentials.yml
 databases/*
 !databases/README.md
 app/devices/*
-!app/devices/README.md
 app/modules/plugins/*
+!app/modules/plugins/README.md
+!app/devices/README.md
 
 # Distribution / packaging
 .Python

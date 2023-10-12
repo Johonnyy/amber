@@ -47,5 +47,7 @@ while True:
     if exit_code == 10:
         print("Restarting due to update...")
         continue
+    elif exit_code == 11:
+        continue
     else:
         break

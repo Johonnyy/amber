@@ -26,6 +26,41 @@ class TimeAndDate:
         return datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
 
 
+class Mute:
+    def __init__(self):
+        self.name = "Mute"
+        self.description = "Mutes microphone."
+        self.version = "1.0.0"
+        self.parameters = {
+            "type": "object",
+            "properties": {},
+        }
+        self.configOptions = []
+
+    def handle(self, args):
+        from app.local.main import localDevice
+
+        localDevice.muted = True
+
+        return "Success"
+
+
+class Restart:
+    def __init__(self):
+        self.name = "Restart"
+        self.description = "Restarts."
+        self.version = "1.0.0"
+        self.parameters = {
+            "type": "object",
+            "properties": {},
+        }
+        self.configOptions = []
+
+    def handle(self, args):
+        sys.exit(11)
+        return "Success"
+
+
 class Update:
     def __init__(self):
         self.name = "Update"

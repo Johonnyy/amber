@@ -5,6 +5,7 @@ import platform
 import datetime
 import os
 from .speech_recognition_manager import startRecording
+from .text_to_speech import generateAudio
 from app.functions import *
 import sys
 
@@ -19,22 +20,18 @@ else:
     base_dir = os.path.dirname(get_base_dir())
 
 if arch == "AMD64":
+    location = os.path.join(base_dir, "custom_wake_words", "windows")
     keyword_paths = [
-        os.path.join(
-            base_dir, "custom_wake_words", "windows", "hey-amber_en_windows_v2_2_0.ppn"
-        ),
-        os.path.join(
-            base_dir, "custom_wake_words", "windows", "yo-amber_en_windows_v2_2_0.ppn"
-        ),
+        os.path.join(location, "hey-amber_en_windows_v2_2_0.ppn"),
+        os.path.join(location, "yo-amber_en_windows_v2_2_0.ppn"),
+        os.path.join(location, "Unmute_en_windows_v2_2_0.ppn"),
     ]
 else:
+    location = os.path.join(base_dir, "custom_wake_words", "linux")
     keyword_paths = [
-        os.path.join(
-            base_dir, "custom_wake_words", "linux", "hey-amber_en_linux_v2_2_0.ppn"
-        ),
-        os.path.join(
-            base_dir, "custom_wake_words", "linux", "yo-amber_en_linux_v2_2_0.ppn"
-        ),
+        os.path.join(location, "hey-amber_en_linux_v2_2_0.ppn"),
+        os.path.join(location, "yo-amber_en_linux_v2_2_0.ppn"),
+        os.path.join(location, "Unmute_en_linux_v2_2_0.ppn"),
     ]
 
 
@@ -66,7 +63,12 @@ def startListening():
     while True:
         audio_frame = get_next_audio_frame(audio_stream, porcupine)
         keyword_index = porcupine.process(audio_frame)
-        if keyword_index >= 0:
+        if keyword_index == 0 or keyword_index == 1:
+            from .main import localDevice
+
+            if localDevice.muted:
+                continue
+
             log("detected wake word")
 
             # Update the state to RECORDING
@@ -74,3 +76,11 @@ def startListening():
             from .main import localDevice
 
             localDevice.api.createNewSession()
+
+        elif keyword_index == 2:
+            log("detected unmute command")
+            from .main import localDevice
+
+            if localDevice.muted:
+                localDevice.muted = False
+                generateAudio("Okay, I've been unmuted.")
