@@ -17,7 +17,7 @@ if not (os.path.exists(VENVPATH) and os.path.isdir(VENVPATH)):
 
 while True:
     # Find platform
-    print("Activing virtual environment...")
+    print("Activating virtual environment...")
     if platform.system() == "Windows":
         print("System detected: Windows")
         activate_script = os.path.join(VENVPATH, "Scripts", "activate")
@@ -43,6 +43,8 @@ while True:
 
     p = subprocess.Popen([python_executable, "main.py"])
     exit_code = p.wait()
+    
+    exit_code = abs(exit_code)
 
     if exit_code == 10:
         print("Restarting due to update...")
