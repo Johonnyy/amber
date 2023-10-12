@@ -1,4 +1,5 @@
 from app.moduleAPI import log, getCredential
+from app.functions import exit
 
 import requests
 import sys
@@ -57,8 +58,7 @@ class Restart:
         self.configOptions = []
 
     def handle(self, args):
-        sys.exit(11)
-        return "Success"
+        exit(11)
 
 
 class Update:
@@ -117,7 +117,7 @@ class Update:
         except subprocess.CalledProcessError as e:
             print(f"An error occurred while updating the repository: {e}")
 
-        sys.exit(10)
+        exit(10)
 
     def compare_versions(self, local_version, github_version):
         local_version = (

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, redirect, Response, jsonify
 from flask_login import login_required
-from app.functions import getLogs, log, getConfig, writeConfig
+from app.functions import getLogs, log, getConfig, writeConfig, exit
 
 import os
 import sys
@@ -24,7 +24,7 @@ def index():
 @apiBP.route("/restart")
 @login_required
 def restart():
-    sys.exit(0)
+    exit(11)
 
 
 @apiBP.route("/getlogs")

@@ -46,7 +46,7 @@ class Amber:
 
         # ssl_context = ("certs/cert.pem", "certs/key.pem")
         self.extensions.socket.run(
-            self.app, host="0.0.0.0", port=getConfig()["port"] | 8000, use_reloader=False
+            self.app, host="0.0.0.0", port=getConfig()["port"], use_reloader=False
         )
 
     def startLocalDevice(self):

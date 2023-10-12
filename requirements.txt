@@ -15,4 +15,5 @@ elevenlabs
 webcolors
 python-engineio
 google-cloud-dialogflow
+wheel
 Eel

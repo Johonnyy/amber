@@ -10,5 +10,5 @@ picovoiceKey:
 speech:
   region: eastus
   voice: en-US-AriaNeural
-port: 8000
+port: 8080
 enableGUI: True

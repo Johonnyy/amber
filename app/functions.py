@@ -7,6 +7,7 @@ import functools
 import logging
 import time
 import shutil
+import eel
 
 from difflib import SequenceMatcher
 
@@ -85,6 +86,9 @@ def get_base_dir():
         # The application is run from a script
         return os.path.dirname(os.path.abspath(__file__))
 
+def exit(code):
+    eel.close_page()
+    sys.exit(code)
 
 def log(data: str = "", severity: str = "info", color: str = None):
     """Logs data to the console and to the web dashboard \n
