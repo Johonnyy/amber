@@ -83,6 +83,6 @@ You can download Amber for free and modify it how you'd like, but OpenAI charges
 These are my previous attempts before finally landing on using OpenAI Functions. This includes Wit.ai and Dialogflow attempts. You are welcome to look at these and modify them.
 
 # Version History and Notes
-1.2.0 (current) - Almost full documentation
-1.1.0 - Added an updater function (still not sure if it fully works)
-1.0.0 - Base assistant with minimum functionality
+`1.2.2 (current)` - Almost full documentation  
+`1.1.0` - Added an updater function (still not sure if it fully works)  
+`1.0.0` - Base assistant with minimum functionality  

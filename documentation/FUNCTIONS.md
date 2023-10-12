@@ -33,7 +33,6 @@ class GetWeather:
                 "type": "text",
             },
         ]
-        self.requirements = ["googlemaps"]
 
     def handle(self, args):
         # Handle getting the weather
@@ -46,7 +45,6 @@ This is a stripped down version of the weather function. Let's explain it. First
 `self.version`: Version number  
 \*`self.parameters`: Basically the arguments of the function. The format for constructing these can be found [here](https://platform.openai.com/docs/guides/gpt/function-calling).  
 `self.configOptions`: Array of inputs such as API Keys needed for the function. For format can be found in the example.  
-`self.requirements`: Required external libraries to run the function. These will be installed.  
 \* = Being sent to OpenAI Functions  
 
 ### Handle function

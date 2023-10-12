@@ -20,7 +20,6 @@ class Update:
             "properties": {},
         }
         self.configOptions = []
-        self.requirements = []
 
     def handle(self, args):
         githubVersion = None

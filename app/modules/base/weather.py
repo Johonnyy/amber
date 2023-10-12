@@ -34,7 +34,6 @@ class GetWeather:
                 "type": "text",
             },
         ]
-        self.requirements = ["googlemaps"]
 
     def handle(self, args):
         location = args.get("location", None)

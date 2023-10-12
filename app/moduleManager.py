@@ -2,6 +2,8 @@ import importlib
 import inspect
 import os
 import yaml
+import subprocess
+import sys
 
 from app.functions import log, getConfig, writeConfig
 from .pluginBase import BasePlugin
@@ -19,6 +21,7 @@ class ModuleManager:
         self.dir = dir
         self.function_instances = []
         self.module_instances = []
+        self.libaries = []
 
     def load_functions(self):
         log("loading modules")
@@ -34,31 +37,64 @@ class ModuleManager:
             path = f"app/modules/{folder}"
             plugin_files = [f[:-3] for f in os.listdir(path) if f.endswith(".py")]
             for plugin_file in plugin_files:
-                # Step 2: Dynamic Import
-                modulePath = path.replace("/", ".")
-                plugin_module = importlib.import_module(f"{modulePath}.{plugin_file}")
-
-                self.module_instances.append(plugin_module)
-
-                # Step 3: Class Inspection
-                classes = inspect.getmembers(plugin_module, inspect.isclass)
-
-                # Step 4 and 5: Function Check and Registration
-                for name, obj in classes:
-                    name = plugin_file + name
+                retries = 3  # Number of retries
+                while retries > 0:
                     try:
-                        if hasattr(obj, "handle"):
-                            instance = obj()
-                            instance.type = folder
-                            instance.module = plugin_file
-                            self.function_instances.append(instance)
-                            log(
-                                f"Loaded function: {instance.type}/{instance.module}/{instance.name}",
-                                "success",
-                            )
+                        # Step 2: Dynamic Import
+                        modulePath = path.replace("/", ".")
+                        plugin_module = importlib.import_module(
+                            f"{modulePath}.{plugin_file}"
+                        )
+
+                        self.module_instances.append(plugin_module)
+
+                        # Step 3: Class Inspection
+                        classes = inspect.getmembers(plugin_module, inspect.isclass)
+
+                        # Step 4 and 5: Function Check and Registration
+                        for name, obj in classes:
+                            name = plugin_file + name
+                            try:
+                                if hasattr(obj, "handle"):
+                                    instance = obj()
+                                    instance.type = folder
+                                    instance.module = plugin_file
+                                    self.function_instances.append(instance)
+                                    log(
+                                        f"Loaded function: {instance.type}/{instance.module}/{instance.name}",
+                                        "success",
+                                    )
+                            except Exception as e:
+                                log("Error at loading module: " + name, "error")
+                                log(e, "danger")
+
+                        break
+                    except ModuleNotFoundError as e:
+                        missing_module_name = str(e).split("'")[
+                            1
+                        ]  # Extract the missing module name from the error message
+                        log(
+                            f"Missing dependency: {missing_module_name}. Attempting to install...",
+                            "warning",
+                        )
+                        subprocess.check_call(
+                            [
+                                sys.executable,
+                                "-m",
+                                "pip",
+                                "install",
+                                missing_module_name,
+                            ]
+                        )
+                        log(
+                            f"Installed missing dependency: {missing_module_name}",
+                            "success",
+                        )
+                        retries -= 1  # Decrement the retry counter
                     except Exception as e:
-                        log("Error at loading module: " + name, "error")
+                        log("Error at loading module: " + plugin_file, "error")
                         log(e, "danger")
+                        break  # Exit the loop if an unknown error occurs
 
         log("loaded all modules", "success")
 
