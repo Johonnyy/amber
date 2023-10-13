@@ -112,8 +112,8 @@ class ModuleManager:
         for module in self.module_instances:
             # log(module.__name__) app.modules.base.weather
             # log(module.__file__) C:\Users\johnn\Documents\Projects\amber\app\modules\base\weather.py
-            modulePath = module.__file__.split("\\")[-1].replace(".py", "")
-            typePath = module.__file__.split("\\")[-2]
+            modulePath = module.__file__.split("\\").split("/")[-1].replace(".py", "")
+            typePath = module.__file__.split("\\").split("/")[-2]
 
             if (modulePath == moduleName) & (typePath == type):
                 return module

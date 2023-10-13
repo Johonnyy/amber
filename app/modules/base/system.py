@@ -58,6 +58,7 @@ class Restart:
         self.configOptions = []
 
     def handle(self, args):
+        log("Exiting...", "warning")
         exit(11)
 
 
