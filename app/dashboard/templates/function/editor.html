@@ -54,7 +54,7 @@ block content %}
 	var editor;
 	var isChanged = false;
 	var currentFilePath = $("#moduleFilePath").html();
-	var filePathSplit = currentFilePath.split("\\" || "//" || "/");
+	var filePathSplit = currentFilePath.replace(/\\|\/\//g, "/").split("/");
 	var fileName = filePathSplit[filePathSplit.length - 1];
 	var fileType = filePathSplit[filePathSplit.length - 2];
 	$("#fileInfo").html(fileName);

@@ -147,6 +147,8 @@ def createModule():
         if not module_name.endswith(".py"):
             module_name += ".py"
 
+        print(os.getcwd())
+
         path = os.path.join("app", "modules", module_type, module_name)
 
         module_content = "from app.moduleAPI import *"
