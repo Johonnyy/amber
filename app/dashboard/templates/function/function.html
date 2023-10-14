@@ -27,6 +27,16 @@
 		<h5 class="card-title">Plugin Configuration</h5>
 		<form id="dynamic-form">
 			<div id="inputs-container" style="width: 100%">
+				<p>
+					<strong
+						data-toggle="tooltip"
+						data-placement="top"
+						title="Activating debug mode only sends this function, and other activated functions to OpenAI, helping to save tokens."
+						>Debug Mode:</strong
+					>
+					<input type="checkbox" />
+				</p>
+
 				{% for input in plugin.configOptions %}
 				<div class="input-group">
 					<span class="input-group-text" id="{{input.value}}Label"
@@ -63,6 +73,10 @@
 	</div>
 </div>
 <script>
+	$(document).ready(function () {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+
 	document
 		.getElementById("dynamic-form")
 		.addEventListener("submit", function (event) {

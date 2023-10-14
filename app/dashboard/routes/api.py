@@ -21,10 +21,12 @@ apiBP = Blueprint(
 def index():
     return redirect("/dashboard")
 
+
 @apiBP.route("/restart")
 @login_required
 def restart():
     exit(11)
+    return Response(status=200)
 
 
 @apiBP.route("/getlogs")
