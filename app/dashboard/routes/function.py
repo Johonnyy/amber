@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template, Response
+from flask import Blueprint, request, jsonify, render_template, Response, redirect
 from flask_login import login_required
 from app.functions import getLogs, log
 
@@ -59,6 +59,16 @@ def pluginEditor(type, module):
         return render_template("editor.html", file=None, language=None, module=instance)
 
 
+@functionBP.route("/reloadmodule/<type>/<module>")
+@login_required
+def reloadModule(type, module):
+    from app.extensions import extensions
+
+    extensions.module_manager.reloadModule(type, module)
+
+    return redirect("/dashboard/functionmanager")
+
+
 @functionBP.route("/<type>/<module>/<function>/submit-setup", methods=["POST"])
 @login_required
 def pluginSubmitSetup(type, module, function):
@@ -69,6 +79,9 @@ def pluginSubmitSetup(type, module, function):
         extensions.module_manager.setInput(
             type, module, function, input["key"], input["value"]
         )
+
+    extensions.module_manager.load_functions(True)
+    extensions.openai_manager.newSession()
 
     return Response(status=200)
 
@@ -105,7 +118,7 @@ def pluginEditFile(type, module):
         except Exception as e:
             return jsonify({"status": "error", "message": str(e)}), 400
 
-    extensions.module_manager.load_functions()
+    extensions.module_manager.load_functions(True)
     return jsonify({"status": "success"})
 
 
@@ -114,13 +127,20 @@ def pluginEditFile(type, module):
 def pluginEditorSaveFile():
     try:
         file_path = request.json.get("file_path")
-        file_content = request.json.get("content")
+        file_content = request.json.get("content", "")
 
-        if not file_path or not file_content:
-            return jsonify({"status": "error", "message": "Invalid data"}), 400
+        if not file_path:
+            return jsonify({"status": "error", "message": "Invalid path"}), 400
 
         with open(file_path, "w") as f:
             f.write(file_content)
+
+        from app.extensions import extensions
+
+        path = os.path.normpath(file_path)
+        path = path.split(os.sep)
+
+        extensions.module_manager.reloadModule(path[-2], path[-1].replace(".py", ""))
 
         return jsonify({"status": "success", "message": "File saved successfully"}), 200
 
@@ -147,8 +167,6 @@ def createModule():
         if not module_name.endswith(".py"):
             module_name += ".py"
 
-        print(os.getcwd())
-
         path = os.path.join("app", "modules", module_type, module_name)
 
         module_content = "from app.moduleAPI import *"
@@ -156,7 +174,7 @@ def createModule():
         with open(path, "w") as f:
             f.write(module_content)
 
-        extensions.module_manager.load_functions()
+        extensions.module_manager.load_functions(True)
 
         return Response(status=200)
 

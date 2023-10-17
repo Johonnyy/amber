@@ -32,14 +32,38 @@ class OpenAIManager:
         self.functions = copy.deepcopy(self.module_manager.function_instances)
         self.functionsToSend = []
 
+        global debugMode
+        debugMode = False
+
         for function in self.functions:
-            self.functionsToSend.append(
-                {
-                    "name": f"{function.type}-{function.module}-{function.name}",
-                    "description": function.description,
-                    "parameters": function.parameters,
-                }
-            )
+            if function.debug == True:
+                debugMode = True
+                break
+
+        for function in self.functions:
+            if function.disabled and function.debug:
+                log(
+                    f"Error loading functions to send: conflicting settings DISABLED and DEBUG for function {function.name}",
+                    "error",
+                )
+                continue
+
+            append = not debugMode
+
+            if debugMode and function.debug:
+                append = True
+
+            if function.disabled:
+                append = False
+
+            if append:
+                self.functionsToSend.append(
+                    {
+                        "name": f"{function.type}-{function.module}-{function.name}",
+                        "description": function.description,
+                        "parameters": function.parameters,
+                    }
+                )
 
     def newSession(self):
         # add logic here later to save previous conversation for training purposes

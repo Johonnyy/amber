@@ -24,7 +24,7 @@ class Amber:
 
     def startDashboard(self):
         self.app.debug = True
-        self.app.secret_key = "W.5$I['UyGE)2u)_Wn]Smfo^OhY41H0t"
+        self.app.secret_key = "W.5$I['UyGE)2u)_Wn]Smfo^OhY41H0t"  # Randomly generated key, doesn't do anything
         self.extensions.socket.init_app(self.app, logger=True)
         self.app.logger.addFilter(IgnoreSpecificMessageFilter())
 
@@ -51,8 +51,6 @@ class Amber:
 
     def startLocalDevice(self):
         localDevice.start()  # Start listening
-        localDevice.guiApp.start()  # Start GUI
-        # LocalDevice.start()
 
 
 amber = Amber()

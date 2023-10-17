@@ -27,17 +27,7 @@
 		<h5 class="card-title">Plugin Configuration</h5>
 		<form id="dynamic-form">
 			<div id="inputs-container" style="width: 100%">
-				<p>
-					<strong
-						data-toggle="tooltip"
-						data-placement="top"
-						title="Activating debug mode only sends this function, and other activated functions to OpenAI, helping to save tokens."
-						>Debug Mode:</strong
-					>
-					<input type="checkbox" />
-				</p>
-
-				{% for input in plugin.configOptions %}
+				{% for input in plugin.configOptions %} {% if input.type == "text" %}
 				<div class="input-group">
 					<span class="input-group-text" id="{{input.value}}Label"
 						>{{input.title}}</span
@@ -50,7 +40,30 @@
 						value="{{inputs[input.value]}}"
 					/>
 				</div>
-				{% endfor %}
+				{% elif input.type == "checkbox" %}
+				<div class="input-group">
+					<span class="input-group-text" id="{{input.value}}Label"
+						>{{input.title}}</span
+					>
+					<div class="input-group-text">
+						<input
+							class="form-check-input mt-0"
+							data-toggle="tooltip"
+							data-placement="top"
+							name="{{input.value}}"
+							title="{{input.description}}"
+							type="checkbox"
+							aria-label="{{input.description}}"
+							{%
+							if
+							inputs[input.value]
+							%}checked{%
+							endif
+							%}
+						/>
+					</div>
+				</div>
+				{% endif %} {% endfor %}
 			</div>
 			<button type="submit" class="btn btn-primary mt-3" id="saveChanges">
 				Save Changes
@@ -82,11 +95,16 @@
 		.addEventListener("submit", function (event) {
 			event.preventDefault();
 
-			const formData = new FormData(event.target);
+			const form = document.getElementById("dynamic-form");
 			const data = [];
-			formData.forEach((value, key) => {
-				data.push({ key: key, value: value });
-			});
+
+			for (let element of form.elements) {
+				if (element.type === "checkbox") {
+					data.push({ key: element.name, value: element.checked });
+				} else if (element.type === "text") {
+					data.push({ key: element.name, value: element.value });
+				}
+			}
 
 			console.log(data);
 

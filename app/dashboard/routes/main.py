@@ -68,11 +68,16 @@ def functionmanager():
     functions = extensions.module_manager.function_instances
     modules = extensions.module_manager.module_instances
 
-    for module in modules:
-        module.name = module.__name__.split(".")[-1]
-        module.type = module.__name__.split(".")[-2]
+    disabledCount = len([obj for obj in functions if obj.disabled == True])
+    debugCount = len([obj for obj in functions if obj.debug == True])
 
-    return render_template("functionmanager.html", plugins=functions, modules=modules)
+    return render_template(
+        "functionmanager.html",
+        plugins=functions,
+        modules=modules,
+        disabledCount=disabledCount,
+        debugCount=debugCount,
+    )
 
 
 @mainBP.route("/devices")
@@ -83,8 +88,6 @@ def devices():
 
     for device in extensions.device_manager.loaded_devices:
         devices.append({"name": device.name, "id": device.id})
-
-    print(devices)
 
     return render_template("devices.html", devices=devices)
 
@@ -97,12 +100,9 @@ def device(device):
 
     deviceInstance = extensions.device_manager.get_device_by_id(device)
 
-    print(deviceDict)
-
     if not deviceInstance:
         return redirect("/dashboard/devices")
 
     deviceDict["name"] = deviceInstance.name
-    print(deviceDict)
 
     return render_template("device.html", device=deviceDict)

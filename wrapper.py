@@ -43,13 +43,11 @@ while True:
 
     p = subprocess.Popen([python_executable, "main.py"])
     exit_code = p.wait()
-    
+
     exit_code = abs(exit_code)
 
-    if exit_code == 10:
-        print("Restarting due to update...")
-        continue
-    elif exit_code == 11:
+    if exit_code == 11:
+        print("Restarting now...")
         continue
     else:
         break

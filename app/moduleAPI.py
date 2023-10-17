@@ -11,9 +11,6 @@ def getCredential(
     functionName: str = None,
     credential: str = None,
 ):
-    if not moduleName:
-        return
-
     from app.extensions import extensions
 
     return extensions.module_manager.getInput(
