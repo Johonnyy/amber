@@ -27,10 +27,11 @@ if __name__ == "__main__":
         startDashboard.daemon = True
         startDashboard.start()
 
-        if getConfig()["enableGUI"]:
-            eel.start(
-                "index.html", mode="chrome", cmdline_args=["--kiosk"], block=False
-            )
+        if getConfig()["local"]["enableGUI"]:
+            eel.start("index.html", mode="chrome", block=False)
+            # eel.start(
+            #     "index.html", mode="chrome", cmdline_args=["--kiosk"], block=False
+            # )
             while not variables.stop:
                 eel.sleep(1)
 

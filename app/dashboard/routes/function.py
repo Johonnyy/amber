@@ -80,7 +80,7 @@ def pluginSubmitSetup(type, module, function):
             type, module, function, input["key"], input["value"]
         )
 
-    extensions.module_manager.load_functions(True)
+    extensions.module_manager.reloadModule(type, module)
     extensions.openai_manager.newSession()
 
     return Response(status=200)

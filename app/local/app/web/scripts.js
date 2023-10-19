@@ -1,38 +1,37 @@
-//const { Howl, Howler } = require("howler");
-
-var tadLeft;
-var tadBottom;
-
 var dataDisplayActive = false;
 
-var socketio;
-
-fetch(
-	"https://api.nasa.gov/planetary/apod?api_key=***REMOVED***"
-).then(async (result) => {
-	var json = await result.json();
-	console.log(json);
-	$("#body").css("background-image", `url(${json.url})`);
-	// $("#body").css("background-image", `url(${json.hdurl})`);
-});
-
 $(document).ready(async function () {
-	// updateConfig();
 	// use ipc to load config and then use it to change config
+	await setImage();
 
-	setInterval(() => {
-		if (new Date().getHours() === 6) {
-			fetch(
-				"https://api.nasa.gov/planetary/apod?api_key=***REMOVED***"
-			).then(async (result) => {
-				var json = await result.json();
-				console.log(json);
-				$("#body").css("background-image", `url(${json.url})`);
-				// $("#body").css("background-image", `url(${json.hdurl})`);
-			});
-		}
+	setInterval(async () => {
+		await setImage();
 	}, 1000 * 60 * 60);
 });
+
+eel.expose(setImage);
+
+async function setImage() {
+	config = await eel.get_config()();
+
+	console.log(config);
+
+	if (config.local.source == "nasa") {
+		fetch(
+			`https://api.nasa.gov/planetary/apod?api_key=${config.local.nasaApiKey}`
+		).then(async (result) => {
+			var json = await result.json();
+			$("#body").css("background-image", `url(${json.hdurl})`);
+			// $("#body").css("background-image", `url(${json.hdurl})`);
+		});
+	} else if (config.local.source == "bing") {
+		fetch("https://bing.biturl.top/").then(async (result) => {
+			var json = await result.json();
+			$("#body").css("background-image", `url(${json.url})`);
+			// $("#body").css("background-image", `url(${json.hdurl})`);
+		});
+	}
+}
 
 function refreshTime() {
 	//time

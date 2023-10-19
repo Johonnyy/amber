@@ -13,3 +13,8 @@ class AmberLocalApp:
 
     def stopListening(self):
         eel.hideListening()
+
+    @eel.expose
+    def get_config():
+        config = getConfig()
+        return config

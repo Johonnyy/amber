@@ -11,4 +11,7 @@ speech:
   region: eastus
   voice: en-US-AriaNeural
 port: 8080
-enableGUI: True
+local:
+  enableGUI: True
+  source: bing
+  nasaApiKey: 

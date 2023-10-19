@@ -10,11 +10,7 @@ import shutil
 
 from difflib import SequenceMatcher
 
-
-class IgnoreSpecificMessageFilter(logging.Filter):
-    def filter(self, record):
-        # Ignore GET requests to /dashboard/api/getlogs
-        return "GET /dashboard/api/getlogs" not in record.getMessage()
+configCached = yaml.safe_load(open("config.yml"))
 
 
 class bcolors:
@@ -27,6 +23,12 @@ class bcolors:
     ENDC = "\033[0m"
     BOLD = "\033[1m"
     UNDERLINE = "\033[4m"
+
+
+class IgnoreSpecificMessageFilter(logging.Filter):
+    def filter(self, record):
+        # Ignore requests to /dashboard/
+        return "/dashboard/" not in record.getMessage()
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -44,7 +46,7 @@ for _ in range(3):
 
 ignore_filter = IgnoreSpecificMessageFilter()
 logging.basicConfig(filename=log_file_path, level=logging.INFO)
-logging.getLogger("werkzeug").addFilter(ignore_filter)
+logging.getLogger("geventwebsocket.handler").addFilter(ignore_filter)
 
 
 def prevent_plugin_access(func):
@@ -156,36 +158,28 @@ def getLogs():
 
 @prevent_plugin_access
 def getConfig():
-    base_path = get_base_dir()
-
     if not os.path.exists("config.yml") and os.path.exists("config.yml.example"):
         shutil.copyfile("config.yml.example", "config.yml")
 
     try:
-        if frozen():
-            return yaml.safe_load(open(os.path.join(base_path, "config.yml")))
-        else:
-            return yaml.safe_load(
-                open(os.path.join(os.path.dirname(base_path), "config.yml"))
-            )
+        with open("config.yml", "r") as stream:
+            return yaml.safe_load(stream)
     except FileNotFoundError as e:
         log(
             "Could not find config file! Copy it from the config.yml.example",
             "error",
             "BOLD",
         )
+    except yaml.YAMLError as e:
+        log(f"Error parsing config file: {e}", "error", "BOLD")
 
 
 @prevent_plugin_access
 def writeConfig(data):
-    base_path = get_base_dir()
+    with open("config.yml", "w") as file:
+        yaml.safe_dump(data, file)
 
-    if frozen():
-        with open(os.path.join(base_path, "config.yml"), "w") as file:
-            yaml.safe_dump(data, file)
-    else:
-        with open(os.path.join(os.path.dirname(base_path), "config.yml"), "w") as file:
-            yaml.safe_dump(data, file)
+    print("finished writing")
 
 
 def similar(a: str, b: str):

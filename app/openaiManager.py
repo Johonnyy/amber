@@ -4,6 +4,7 @@ import sqlite3
 import uuid
 import datetime
 import copy
+import os
 
 from app.functions import log, getConfig
 
@@ -80,6 +81,23 @@ class OpenAIManager:
             }
         )
 
+        mem_path = os.path.join("databases", "memory.json")
+
+        if not os.path.exists(mem_path):
+            # code here to create new file with default content of []
+            with open(mem_path, "w") as f:
+                json.dump([], f, indent=4)
+
+        with open(mem_path) as f:
+            data = json.load(f)
+
+        self.addMessage(
+            {
+                "role": "system",
+                "content": "Memory: " + json.dumps(data, separators=(",", ":")),
+            }
+        )
+
         # INITIALIZE CONVERSATION
         self.conversation["id"] = str(uuid.uuid4())
         self.conversation["tokens"] = 0
@@ -91,31 +109,45 @@ class OpenAIManager:
         self.addMessage({"role": "user", "content": message})
         self.runChatCompletion()
 
-        if self.chatCompletionMessage.get("function_call"):
-            # Call the function
-            function_string = self.chatCompletionMessage["function_call"]["name"]
-            function_type = function_string.split("-")[0]
-            function_module = function_string.split("-")[1]
-            function_name = function_string.split("-")[2]
-            log(
-                f"Calling Function: \n\tTYPE: {function_type} MODULE: {function_module} NAME: {function_name}",
-                color="HEADER",
-            )
-            function_to_run = self.module_manager.getFunctionByName(
-                function_type, function_module, function_name
-            )
-            function_response = function_to_run.handle(
-                json.loads(self.chatCompletionMessage["function_call"]["arguments"])
-            )
+        while True:
+            if self.chatCompletionMessage.get("function_call"):
+                # Call the function
+                log(self.chatCompletionMessage, "warning")
+                function_string = self.chatCompletionMessage["function_call"]["name"]
 
-            if not function_response:
-                function_response = "Success"
+                if len(function_string.split("-")) != 3:
+                    log("Invalid Function", "error")
+                    self.messages.append(
+                        {
+                            "role": "system",
+                            "content": "You provided an invalid function. Please rechoose a valid function",
+                        }
+                    )
+                    self.runChatCompletion()
+                    continue
 
-            return self.handleFunctionResponse(
-                self.chatCompletionMessage, function_response
-            )
+                function_type = function_string.split("-")[0]
+                function_module = function_string.split("-")[1]
+                function_name = function_string.split("-")[2]
+                log(
+                    f"Calling Function: \n\tTYPE: {function_type} MODULE: {function_module} NAME: {function_name}",
+                    color="HEADER",
+                )
+                function_to_run = self.module_manager.getFunctionByName(
+                    function_type, function_module, function_name
+                )
+                function_response = function_to_run.handle(
+                    json.loads(self.chatCompletionMessage["function_call"]["arguments"])
+                )
 
-        return self.chatCompletionMessage["content"]
+                if not function_response:
+                    return
+
+                return self.handleFunctionResponse(
+                    self.chatCompletionMessage, function_response
+                )
+
+            return self.chatCompletionMessage["content"]
 
     def runChatCompletion(self):
         log("Running chat completion")

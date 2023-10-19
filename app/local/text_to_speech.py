@@ -37,7 +37,5 @@ def generateAudio(text):
                 log("Error details: {}".format(cancellation_details.error_details))
                 log("Did you set the speech resource key and region values?")
 
-    log("generated, now playing")
-
     log("played")
     log()
