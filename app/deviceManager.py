@@ -19,8 +19,9 @@ class DeviceManager:
         self.loaded_devices = []
         self.disabled_devices = []
 
-    def load_devices(self, socket):
-        log("loading devices")
+    def load_devices(self, app):
+        self.app = app
+        log("Loading devices")
         for device_name in os.listdir(self.dir):
             if os.path.isdir(os.path.join("app", self.device_dir, device_name)):
                 device_module_path = f"app.{self.device_dir}.{device_name}.main"
@@ -30,17 +31,14 @@ class DeviceManager:
                 ):
                     instance = device_module.Device()
                     res = instance.start()
-                    log("Loaded device: " + instance.name)
+                    log("Loaded device: " + instance.name, "success")
                     self.loaded_devices.append(instance)
 
-                # Namespace
+                    # Blueprint
 
-                module = importlib.import_module(
-                    f"app.{self.device_dir}.{device_name}.namespace"
-                )
-                namespace_class = getattr(module, "DeviceNamespace")
-                socket.on_namespace(namespace_class(f"/device/{device_name}"))
-                log("Loaded device namespace: " + instance.name)
+                    if instance.blueprint:
+                        self.app.register_blueprint(instance.blueprint, url_prefix=f'/device/{instance.id}')
+
 
     def get_device_by_id(self, id):
         for device in self.loaded_devices:

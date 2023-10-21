@@ -15,8 +15,7 @@ class Extensions:
         self.device_manager = DeviceManager()
 
         self.module_manager.load_functions()
-        self.device_manager.load_devices(self.socket)
-
+        
         self.openai_manager = OpenAIManager(self.module_manager)
 
         self.login_manager.login_view = "dashboard.authBP.login"

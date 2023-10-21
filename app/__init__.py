@@ -22,6 +22,10 @@ class Amber:
         self.dashboard = Dashboard()
         self.app = Flask(__name__)
 
+        # Load devices here so app can be passed through
+
+        self.extensions.device_manager.load_devices(self.app)
+
     def startDashboard(self):
         self.app.debug = True
         self.app.secret_key = "W.5$I['UyGE)2u)_Wn]Smfo^OhY41H0t"  # Randomly generated key, doesn't do anything
